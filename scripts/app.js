@@ -54,34 +54,98 @@ document.write(myObj.firstName + ' ' + myObj.lastName); //write on the DOM the l
 
 
 
+//practice...just an object, not an object array
+// var output = document.getElementById("output");
+// var myObj = {firstName:"Traci", 
+// 			lastName:"Williams", 
+// 			age:33,
+// 			house:"condo",
+// 			car:"none",
+// 		}
 
+// for (var i in myObj) {
+// 	output.innerHTML += myObj.firstName;
+// }
+
+
+//now we are making an AJAX call
 var output = document.getElementById("output");
-var myObj = {firstName:"Traci", 
-			lastName:"Williams", 
-			age:33,
-			house:"condo",
-			car:"none"
+//1. we need to load all of our object information into a container
+var myObj = "", page = 0; //created a container object and keeping it blank - keeps it as a global value
 
-		}
+loadQuestions(); //calling the load questions function
+console.log(myObj); //will display what's in the container object in the conosole
+//2. now lets set up our AJAX call within the function
+//set up a request to allow us to open up a connection to another web page which is the variable a
+//then we are getting a request and using the json URL that we created and keep it true
+//now we have to see about the "readyState" (or status which is 200 
+//- whenever we are trying to access the data that the connection is opened and we have received some content here
+//so lets make a conditional statement that says if readyState is equal to 4, then we have data and are ready to go with the quiz
+//can use a.resonseText or a.response
+//uncomment out console.log(a) to see the above information
+
+/*
+function loadQuestions() {
+    var a = new XMLHttpRequest();
+    a.open("GET", "https://api.myjson.com/bins/14v6f", true);
+
+    if (a.readyState == 4) {
+    	var myData = JSON.parse(a.responseText);
+    	console.log(myData);
+    	for (var i in myData) {
+    		output.innerHTML += myData[i].question + '? <br>';
+    	}
+    }
+    console.log(a);
+    a.send();	
+
+}
+*/
+//^^this isn't working becuase we are not making sure that that readyState is available so we need to build out another function
+//to listen for the readyState change
+//onreadystatechange function
 
 
+//this works
 
-for (var i in myObj) {
-	output.innerHTML += myObj.firstName;
+function loadQuestions() {
+    var a = new XMLHttpRequest();
+    a.open("GET", "https://api.myjson.com/bins/14v6f", true);
+    a.onreadystatechange = function () {
+        if (a.readyState == 4) {
+            myObj = JSON.parse(a.responseText);
+            page = 1
+            buildQuiz();
+        }
+    }
+    a.send();
 }
 
+//build out quiz
+//need to loop through all the oojects within the myObj object
+//looping through the questions
 
 
+// function buildQuiz() {
+// 	for (var i in myObj) {
+//     console.log(myObj[i].question);
+// 	}
+// }
 
-
-
-
-
-
-
-
-
-
+//but we want to put the questions on multiple pages - so we need to have different page values - var myObj = "", page=0 -
+//and we don't need to loop through yet but just assign each question to a page (add page = 1 to the loadQuestions function)
+//now loop through
+function buildQuiz() {
+	var myQuestion = myObj[page - 1].question;
+	var myCorrect = myObj[page - 1].correct;
+	var questionHolder = '';
+    
+    for (var i in myObj[page - 1].answers) {
+    	questionHolder += '<div class="col-sm-6"><a>' + myObj[page - 1].answers[i] + '</a></div>';
+    }
+    output.innerHTML = "<div>" + myQuestion + "</div>";
+    output.innerHTML += questionHolder;
+ }
 
 
 
