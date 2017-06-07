@@ -139,11 +139,21 @@ function buildQuiz() {
 	var myQuestion = myObj[page - 1].question;
 	var myCorrect = myObj[page - 1].correct;
 	var questionHolder = '';
-    
+    var yesCorrect = '';
+
+
     for (var i in myObj[page - 1].answers) {
-    	questionHolder += '<div class="col-sm-6"><a>' + myObj[page - 1].answers[i] + '</a></div>';
-    }
-    output.innerHTML = "<div>" + myQuestion + "</div>";
+    	
+    	if (i == myCorrect) {
+    		yesCorrect = '*';
+    	 } //else {
+    	// 	yesCorrect= '';
+    	// }
+
+    	questionHolder += '<div class="col-sm-6"><div class="btnAns">' + myObj[page - 1].answers[i] + ' ' + yesCorrect + '</div></div>';
+ 	  
+	}
+    output.innerHTML = '<div class="myQ">' + myQuestion +  ' </div>';
     output.innerHTML += questionHolder;
  }
 
