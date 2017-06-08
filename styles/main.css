@@ -19,7 +19,13 @@
 }
 
 .btnAns:hover {
-	background-color: coral;
+	background-color: yellow;
+	color: green;
+}
+
+.selAnswer {
+	background-color: pink;	
+	color: white;
 }
 
 // #output {

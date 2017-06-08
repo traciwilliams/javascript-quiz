@@ -168,7 +168,8 @@ function buildQuiz(pg) {
     	 }
 
     	//questionHolder += '<div class="col-sm-6"><div class="btnAns">' + myObj[page - 1].answers[i] + ' ' + yesCorrect + '</div></div>';
- 	    questionHolder += '<div class="col-sm-6"><div class="btnAns">' + myObj[page - 1].answers[i] + '</div></div>';
+ 	    //questionHolder += '<div class="col-sm-6"><div class="btnAns">' + myObj[page - 1].answers[i] + '</div></div>';
+ 	    questionHolder += '<div class="col-sm-6"><div class="btnAns" data-id="'+ parseInt(i) +'">' + myObj[page - 1].answers[i] + '</div></div>';
  	  
 	}
     output.innerHTML = '<div class="myQ">' + myQuestion +  ' </div>';
@@ -193,12 +194,39 @@ btnNxt.onclick = function() {
 	buildQuiz(page + 1)
 	};
 
+
+//how to make all of the buttons clickable and get the values from the buttons (look at the top)
 //console.log(this); has all the information triggered off a click
 //for this myAnswer function to work we need to modify this code: questionHolder += '<div class="col-sm-6"><div class="btnAns">' + myObj[page - 1].answers[i] + ' ' + yesCorrect + '</div></div>';
 //see the modification up above
 
+// function myAnswer() {
+// 	var myResult = "";
+// 	this.classList.toggle()
+// 	if (this.innerText == correctAnswer) {
+// 		myResult = "correct";
+// 	} else {
+// 		myResult = "incorrect";
+// 	}
+// 	console.log(myResult); 
+// 	console.log(correctAnswer);
+// };
+
+
+//how to retain the values that have beeen clicked
+//make a class to indicate an answer has been selected
+//whenever a choice is selected we want to add the class selAnswer to the element
+//classList is on the Dom and toggle is a built in function in javascript
+//we want to loop through the selections and only add the class to the selected answer and then remove the class from the other answers
+//changed the questionHolder += '<div class="col-sm-6"><div class="btnAns" data-id="'+ parseInt(i) +'">' + myObj[page - 1].answers[i] + '</div></div>';
+//used parseInt(i) to make sure the value is an integer
+//output.children.length --> output is the container, children are the choices within the container
+
+
 function myAnswer() {
 	var myResult = "";
+	var indexId = this.getAttribute("data-id");
+	this.classList.toggle("selAnswer");
 	if (this.innerText == correctAnswer) {
 		myResult = "correct";
 	} else {
@@ -206,12 +234,15 @@ function myAnswer() {
 	}
 	console.log(myResult); 
 	console.log(correctAnswer);
+	for(var q = 0; q < output.children.length; q++) {
+		console.log(output.children[q].children);
+
+	}
+	for (var x = 0; x < bAnswer.length; x++) {
+		console.dir(bAnswer[x])
+	}
+
 };
-
-//how to make all of the buttons clickable and get the values from the buttons (look at the top)
-
-
-
 
 
 
