@@ -8,7 +8,8 @@ var myObj = {firstName:"Traci",
 			lastName:"Williams", 
 			age:33}
 
-document.write(myObj.firstName + ' ' + myObj.lastName); //write on the DOM the last name from the myObj object
+document.write(myObj.firstName + ' ' + myObj.lastName); 
+//write on the DOM the last name from the myObj object
 */
 
 //javascript can use quotes or no quotes but because we are bring this object into Jason we need the quotes
@@ -34,19 +35,18 @@ document.write(myObj.firstName + ' ' + myObj.lastName); //write on the DOM the l
 // console.log(myObj);
 
 // need to use .parse because we don't want this entire string returned
-
 //var myData = '[{ "Question": "What color is an apple?", "Answers": ["blue", "red", "purple"],"correct": 1},{"Question": "What color is grass?","Answers": ["green", "red", "purple"],"correct": 0}]'
 //var myObj = JSON.parse(myData);
 //console.log(myObj);
 
 
-//now to put it on the screen
+//now to put it on the page
 
 // var output = document.getElementById("output");
 // var myData = '[{"question":"What color is an apple","answers":["Blue","Red","Purple"],"correct":1},{"question":"What Color is Grass","answers":["Green","Red","Purple"],"correct":0}]';
 // var myObj = JSON.parse(myData);
 
-//loops through the questions
+//loops through the question and prints the question on the page
 // for (var i in myObj) {
 //     output.innerHTML += myObj[i].question + '? <br>';
 // }
@@ -70,11 +70,16 @@ document.write(myObj.firstName + ' ' + myObj.lastName); //write on the DOM the l
 
 //now we are making an AJAX call
 var output = document.getElementById("output");
+var bAnswer = document.getElementsByClassName("btnAns");//to bet access to the possible answers of the quiz
 //1. we need to load all of our object information into a container
-var myObj = "", page = 0; //created a container object and keeping it blank - keeps it as a global value
+var myObj = ""; 
+var page = 0; //created a container object and keeping it blank - keeps it as a global value
+var correctAnswer = 0;
+
 
 loadQuestions(); //calling the load questions function
 console.log(myObj); //will display what's in the container object in the conosole
+
 //2. now lets set up our AJAX call within the function
 //set up a request to allow us to open up a connection to another web page which is the variable a
 //then we are getting a request and using the json URL that we created and keep it true
@@ -114,15 +119,15 @@ function loadQuestions() {
     a.onreadystatechange = function () {
         if (a.readyState == 4) {
             myObj = JSON.parse(a.responseText);
-            page = 1
-            buildQuiz();
+            //page = 1
+            buildQuiz(1);
         }
     }
     a.send();
 }
 
 //build out quiz
-//need to loop through all the oojects within the myObj object
+//need to loop through all the objects within the myObj object
 //looping through the questions
 
 
@@ -135,9 +140,21 @@ function loadQuestions() {
 //but we want to put the questions on multiple pages - so we need to have different page values - var myObj = "", page=0 -
 //and we don't need to loop through yet but just assign each question to a page (add page = 1 to the loadQuestions function)
 //now loop through
-function buildQuiz() {
+
+//correctAnswer = myObj[page - 1].answers[myCorrect]; is the container of the value of the actual answer
+//this gives us the ability to make a comparison between the value that is being sent on the inner html
+//from the clicked value to see what is being contained in the correctAnswer
+
+function buildQuiz(pg) {
+
+	page = pg;
+	if (page > 0) { 
 	var myQuestion = myObj[page - 1].question;
 	var myCorrect = myObj[page - 1].correct;
+
+	correctAnswer = myObj[page - 1].answers[myCorrect];
+
+
 	var questionHolder = '';
     var yesCorrect = '';
 
@@ -146,16 +163,63 @@ function buildQuiz() {
     	
     	if (i == myCorrect) {
     		yesCorrect = '*';
-    	 } //else {
-    	// 	yesCorrect= '';
-    	// }
+    	 } else {
+    	 	yesCorrect= '';
+    	 }
 
-    	questionHolder += '<div class="col-sm-6"><div class="btnAns">' + myObj[page - 1].answers[i] + ' ' + yesCorrect + '</div></div>';
+    	//questionHolder += '<div class="col-sm-6"><div class="btnAns">' + myObj[page - 1].answers[i] + ' ' + yesCorrect + '</div></div>';
+ 	    questionHolder += '<div class="col-sm-6"><div class="btnAns">' + myObj[page - 1].answers[i] + '</div></div>';
  	  
 	}
     output.innerHTML = '<div class="myQ">' + myQuestion +  ' </div>';
     output.innerHTML += questionHolder;
- }
+
+    for (var x = 0; x < bAnswer.length; x++) {
+    	bAnswer[x].addEventListener("click", myAnswer, false);
+    }
+
+
+
+    console.log(bAnswer); //this is showing us the possible answers to the quiz question
+   }
+};
+//now we need to add event listeners and find out what the user has clicked on, and progression through the quiz
+
+//event handlers for the next and previous buttons
+btnPre.onclick = function() {
+	buildQuiz(page - 1)
+	};
+btnNxt.onclick = function() {
+	buildQuiz(page + 1)
+	};
+
+//console.log(this); has all the information triggered off a click
+//for this myAnswer function to work we need to modify this code: questionHolder += '<div class="col-sm-6"><div class="btnAns">' + myObj[page - 1].answers[i] + ' ' + yesCorrect + '</div></div>';
+//see the modification up above
+
+function myAnswer() {
+	var myResult = "";
+	if (this.innerText == correctAnswer) {
+		myResult = "correct";
+	} else {
+		myResult = "incorrect";
+	}
+	console.log(myResult); 
+	console.log(correctAnswer);
+};
+
+//how to make all of the buttons clickable and get the values from the buttons (look at the top)
+
+
+
+
+
+
+
+
+
+
+
 
 
 
